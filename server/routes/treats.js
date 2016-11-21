@@ -22,7 +22,7 @@ router.get('/:id', function (req, res) {
   })
   .catch(function (err) {
     console.log('error on SELECT', err);
-    res.sendStatus(500);git 
+    res.sendStatus(500);git
   });
 });
 
@@ -56,25 +56,23 @@ router.post('/', function (req, res) {
   });
 });
 
-//
-// router.patch('/:id', function (req, res) {
-//   var treat = req.body;
-//   var treatId = req.params.id;
-//
-//   pool.connect()
-//     .then(function (client) {
-//       client.query('UPDATE treats ' +
-//       'SET completed = $1 ' +
-//       'WHERE id = $2', [treat.completed, treatId])
-//         .then(function () {
-//           client.release();
-//           res.sendStatus(204);
-//         });
-//     })
-//     .catch(function (err) {
-//       res.sendStatus(500);
-//     });
-// });
+
+router.patch('/', function (req, res) {
+  var treat = req.body;
+
+  pool.connect()
+  .then(function (client) {
+    client.query('UPDATE treats (name, description, pic) VALUES($1, $2, $3) ' +
+    'WHERE id = $4', [treat.name, treat.description, treat.url, treat.id])
+      .then(function () {
+        client.release();
+        res.sendStatus(204);
+    });
+  })
+  .catch(function (err) {
+    res.sendStatus(500);
+  });
+});
 //
 // router.delete('/:id', function (req, res) {
 //   var treatId = req.params.id;

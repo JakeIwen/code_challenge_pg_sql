@@ -28,6 +28,24 @@ $(document).ready(function () {
     postTreat(newTreat);
   });
 
+  $('#treat-display').on('click', '.edit', function () {
+    event.preventDefault();
+
+    var treateName = $('#treatNameInput').val();
+    var treatDescription = $('#treatDescriptionInput').val();
+    var treateURL = $('#treatUrlInput').val();
+    var editId = $(this).attr('id');
+
+    var editTreat = {
+      name: treateName,
+      description: treatDescription,
+      url: treateURL,
+      id: editId
+    };
+    console.log('treazt edit', editTreat);
+    patchTreat(editTreat);
+  });
+
   /**---------- AJAX Functions ----------**/
 
   // GET /treats
@@ -77,6 +95,38 @@ $(document).ready(function () {
     });
   }
 
+
+
+  function patchTreat(editTreat) {
+    $.ajax({
+      method: 'PATCH',
+      url: '/treats',
+      data: editTreat
+    })
+    .done(function (response) {
+        gettreats();
+        console.log('PATCH /treats success!', response);
+      })
+    .fail(function (response) {
+        console.log('PATCH /treats fail!', response);
+      });
+  }
+
+  /* Send DELETE /treats/id request to server */
+  function deleteTreat(treatId) {
+    $.ajax({
+      method: 'DELETE',
+      url: '/treats/' + treatId,
+    })
+    .done(function (response) {
+        gettreats();
+        console.log('DELETE /treats success!', response);
+      })
+    .fail(function (response) {
+        console.log('DELETE /treats fail!', response);
+      });
+  }
+
   /** ---------- DOM Functions ----------**/
 
   function clearDom() {
@@ -101,7 +151,7 @@ $(document).ready(function () {
                   '<img src="' + treat.pic + '" class="u-max-full-width" />' +
                   '<div class="toggle row">' +
                   '<div class="six columns">' +
-                  '<button class="edit u-full-width">Edit</button>' +
+                  '<button id="' + treat.id + '" class="edit u-full-width">Edit</button>' +
                   '</div>' +
                   '<div class="six columns">' +
                   '<button class="delete u-full-width">Delete</button>' +
